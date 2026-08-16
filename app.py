@@ -4,7 +4,9 @@ import urllib.error
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
-
+@app.route('/')
+def home():
+    return "¡El servidor de Vortex Media está activo! 🚀"
 GEMINI_API_KEY = "AQ.Ab8RN6L9zoSw0xfy4oQI8T-zR6gu2s88_-9GC0E--g4Rg5i9Gw"
 
 @app.route('/webhook', methods=['POST'])
