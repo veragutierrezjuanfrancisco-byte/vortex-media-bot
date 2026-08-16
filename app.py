@@ -4,9 +4,11 @@ import urllib.error
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
+
 @app.route('/')
 def home():
-    return "¡El servidor de Vortex Media está activo! 🚀"
+    return "¡El servidor de Vortex Media está activo y listo para vender! 🚀"
+
 GEMINI_API_KEY = "AQ.Ab8RN6L9zoSw0xfy4oQI8T-zR6gu2s88_-9GC0E--g4Rg5i9Gw"
 
 @app.route('/webhook', methods=['POST'])
@@ -15,18 +17,20 @@ def cualificar_lead():
     mensaje = data.get("mensaje", "")
 
     prompt = f"""
-    Eres el asistente de cualificación de leads de Vortex Media.
-    Analiza el siguiente mensaje de un cliente potencial y determina su intención de compra.
+    Eres el asistente comercial experto de 'Vortex Media', una agencia de marketing digital y publicidad de alto rendimiento.
+    Tu objetivo es atender amablemente al usuario que escribe desde redes sociales (Facebook/WhatsApp), entender lo que necesita, calificar su nivel de interés y redactar una respuesta comercial vendedora que lo invite a dar el siguiente paso (por ejemplo, agendar una llamada o dejar su número de WhatsApp).
 
-    Mensaje: "{mensaje}"
+    Mensaje del cliente: "{mensaje}"
 
     Responde ÚNICAMENTE en formato JSON estricto con las siguientes llaves:
     - "estado": "ALTA INTENCIÓN" o "CONSULTA GENERAL"
     - "razon": Una breve explicación de por qué clasificaste así el mensaje.
     - "accion": "Redirigir a asesor humano" o "Responder con bot de preguntas frecuentes"
+    - "respuesta_sugerida": El texto persuasivo y comercial que le responderemos directamente al cliente por el chat.
     """
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
+    # Usamos el modelo correcto que sí reconoce la API de Google
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}]
@@ -60,7 +64,6 @@ def cualificar_lead():
     except Exception as e:
         print("Error en el servidor:", str(e))
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
