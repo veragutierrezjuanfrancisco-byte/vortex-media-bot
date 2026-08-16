@@ -15,10 +15,12 @@ GEMINI_API_KEY = "AQ.Ab8RN6L9zoSw0xfy4oQI8T-zR6gu2s88_-9GC0E--g4Rg5i9Gw"
 def cualificar_lead():
     data = request.get_json() or {}
     mensaje = data.get("mensaje", "")
+    tipo_campaña = data.get("tipo", "marketing_general")
 
     prompt = f"""
     Eres el asistente comercial experto de 'Vortex Media', una agencia de marketing digital y publicidad de alto rendimiento.
-    Tu objetivo es atender amablemente al usuario que escribe desde redes sociales (Facebook/WhatsApp), entender lo que necesita, calificar su nivel de interés y redactar una respuesta comercial vendedora que lo invite a dar el siguiente paso (por ejemplo, agendar una llamada o dejar su número de WhatsApp).
+    Campaña actual del cliente: {tipo_campaña}
+    Tu objetivo es atender amablemente al usuario que escribe desde redes sociales, entender lo que necesita, calificar su nivel de interés y redactar una respuesta comercial vendedora.
 
     Mensaje del cliente: "{mensaje}"
 
@@ -26,11 +28,10 @@ def cualificar_lead():
     - "estado": "ALTA INTENCIÓN" o "CONSULTA GENERAL"
     - "razon": Una breve explicación de por qué clasificaste así el mensaje.
     - "accion": "Redirigir a asesor humano" o "Responder con bot de preguntas frecuentes"
-    - "respuesta_sugerida": El texto persuasivo y comercial que le responderemos directamente al cliente por el chat.
+    - "tipo_lead": "{tipo_campaña}"
     """
 
-    # Usamos el modelo correcto que sí reconoce la API de Google
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}]
