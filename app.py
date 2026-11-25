@@ -1,7 +1,11 @@
 import json
+import os
 import urllib.request
 import urllib.error
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -9,7 +13,7 @@ app = Flask(__name__)
 def home():
     return "¡El servidor de Vortex Media está activo y listo para vender! 🚀"
 
-GEMINI_API_KEY = "AQ.Ab8RN6L9zoSw0xfy4oQI8T-zR6gu2s88_-9GC0E--g4Rg5i9Gw"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 @app.route('/webhook', methods=['POST'])
 def cualificar_lead():
@@ -30,6 +34,9 @@ def cualificar_lead():
     - "accion": "Redirigir a asesor humano" o "Responder con bot de preguntas frecuentes"
     - "tipo_lead": "{tipo_campaña}"
     """
+
+    if not GEMINI_API_KEY:
+        return jsonify({"error": "GEMINI_API_KEY no está configurada en el servidor"}), 503
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
 
